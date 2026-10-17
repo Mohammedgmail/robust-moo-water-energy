@@ -1,0 +1,58 @@
+# Illustrative case study: one borehole water station in northwest Syria (2050 horizon).
+#
+# These values are plausible engineering assumptions chosen for a transparent,
+# reproducible demonstration. They are NOT the data of the published paper.
+# Replace them with project data before using the results for decisions.
+
+finance:
+  discount_rate: 0.08          # -
+  horizon_years: 20            # appraisal period
+
+water:
+  base_demand_m3_day: 600      # ~20,000 people at 30 L/person/day
+  pump_max_flow_m3_h: 80       # existing submersible pump with variable-speed drive
+  pump_efficiency: 0.55        # wire-to-water
+  base_head_m: 150             # total dynamic head today
+  existing_tank_m3: 200
+  max_unmet_fraction: 0.05     # robust reliability target: >= 95 % of demand in EVERY scenario
+  trucking_cost_usd_m3: 4.0    # emergency water trucking covers any shortfall
+  aux_load_kw: 2.0             # chlorination, lighting, controls
+  unserved_energy_usd_kwh: 2.0 # penalty if the auxiliary load cannot be powered (rental genset)
+  # hourly delivery pattern (24 relative weights; normalised to the day's demand)
+  demand_profile: [0.010, 0.008, 0.008, 0.008, 0.012, 0.030, 0.060, 0.070, 0.065, 0.055,
+                   0.050, 0.048, 0.048, 0.045, 0.042, 0.042, 0.045, 0.055, 0.065, 0.068,
+                   0.060, 0.045, 0.030, 0.026]
+
+representative_days:           # days per year, irradiance and temperature shape
+  summer: {weight: 175, demand_factor: 1.20, sunrise: 5.5, sunset: 19.5,
+           peak_irradiance: 950, t_mean: 30.0, t_swing: 7.0}
+  winter: {weight: 165, demand_factor: 0.80, sunrise: 7.0, sunset: 17.0,
+           peak_irradiance: 600, t_mean: 9.0, t_swing: 5.0}
+  dust:   {weight: 25, demand_factor: 1.10, sunrise: 6.0, sunset: 18.5,   # dust storm / overcast
+           peak_irradiance: 220, t_mean: 22.0, t_swing: 3.0}
+
+technologies:
+  pv:      {capex_usd_per_kw: 650, om_usd_per_kw_yr: 12, life_years: 25, max_kw: 400,
+            temp_coeff_per_c: -0.004, noct_c: 45, system_efficiency: 0.85}
+  battery: {capex_usd_per_kwh: 280, om_fraction_yr: 0.01, life_years: 10, max_kwh: 1500,
+            round_trip_efficiency: 0.90, depth_of_discharge: 0.80, c_rate: 0.5}
+  diesel:  {capex_usd_per_kw: 300, om_usd_per_kwh: 0.02, life_years: 10, max_kw: 120,
+            fuel_l_per_kwh: 0.30, co2_kg_per_l: 2.68}
+  tank:    {capex_usd_per_m3: 180, om_fraction_yr: 0.005, life_years: 40, max_m3: 3000}
+  grid:    {tariff_usd_per_kwh: 0.15, co2_kg_per_kwh: 0.45, max_import_kw: 60}
+
+# Deep uncertainty: every combination below is one scenario (3 x 3 x 2 = 18).
+scenarios:
+  climate:                     # 2050 changes relative to today (illustrative)
+    SSP1-2.6: {probability: 0.3333, delta_t_c: 1.0, demand_increase: 0.04, head_increase_m: 8}
+    SSP2-4.5: {probability: 0.3334, delta_t_c: 1.6, demand_increase: 0.07, head_increase_m: 15}
+    SSP5-8.5: {probability: 0.3333, delta_t_c: 2.4, demand_increase: 0.11, head_increase_m: 25}
+  diesel_price_usd_l:
+    low:  {probability: 0.25, value: 0.80}
+    mid:  {probability: 0.50, value: 1.10}
+    high: {probability: 0.25, value: 1.50}
+  grid_hours:                  # conflict-affected supply: hours per night the feeder is live
+    none:    {probability: 0.5, value: 0}
+    partial: {probability: 0.5, value: 6}
+
+nominal_scenario: {climate: SSP2-4.5, diesel_price_usd_l: mid, grid_hours: partial}

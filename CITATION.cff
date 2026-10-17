@@ -1,0 +1,26 @@
+cff-version: 1.2.0
+message: >-
+  This repository is an independent, simplified implementation accompanying the
+  article below. If you use the method, please cite the article.
+title: "robust-moo-water-energy: scenario-based robust multi-objective planning of water-energy systems"
+type: software
+authors:
+  - family-names: Alfandi
+    given-names: Mohammed
+version: 0.1.0
+date-released: 2026-10-17
+license: MIT
+repository-code: "https://github.com/Mohammedgmail/robust-moo-water-energy"
+preferred-citation:
+  type: article
+  title: "A scenario-based robust multi-objective framework for climate-resilient water-energy systems in conflict-affected regions"
+  authors:
+    - family-names: Alfandi
+      given-names: Mohammed
+    - family-names: Seçkiner
+      given-names: Serap Ulusam
+  journal: "Journal of Cleaner Production"
+  volume: 577
+  start: 149516
+  year: 2026
+  doi: "10.1016/j.jclepro.2026.149516"
